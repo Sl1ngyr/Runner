@@ -15,7 +15,7 @@ namespace Player.Animation
         private AnimationBehavior _currentAnimationBehavior;
 
         private Coroutine _animationCoroutine;
-        private bool isEndAnimation = true;
+
         private void Start()
         {
             _animator = GetComponent<Animator>();
@@ -46,21 +46,19 @@ namespace Player.Animation
         {
             Vector2 inputVector = _inputAction.Input.Move.ReadValue<Vector2>();
             
-            if (inputVector.y > 0 && isEndAnimation)
+            if (inputVector.y > 0)
             {
                 _currentAnimationBehavior.Exit();
                 _currentAnimationBehavior = new AnimationBehaviorJump(_animator);
                 _currentAnimationBehavior.Enter();
-                isEndAnimation = false;
             }
-            else if (inputVector.y < 0 && isEndAnimation)
+            else if (inputVector.y < 0)
             {
                 _currentAnimationBehavior.Exit();
                 _currentAnimationBehavior = new AnimationBehaviorSlide(_animator);
                 _currentAnimationBehavior.Enter();
-                isEndAnimation = false;
             }
-            else if(isEndAnimation)
+            else
             {
                 _currentAnimationBehavior.Exit();
                 _currentAnimationBehavior = new AnimationBehaviorRun(_animator);
