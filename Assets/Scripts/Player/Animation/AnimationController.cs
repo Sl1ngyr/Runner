@@ -16,7 +16,7 @@ namespace Player.Animation
 
         private Coroutine _animationCoroutine;
 
-        private void Start()
+        private void Awake()
         {
             _animator = GetComponent<Animator>();
             
