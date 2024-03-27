@@ -1,4 +1,7 @@
+using System.Collections;
+using MainMenu;
 using UnityEngine;
+using Zenject;
 
 namespace Player
 {
@@ -7,23 +10,36 @@ namespace Player
         [SerializeField] private int _swipeDistance = 1;
         [SerializeField] private float _speed = 2;
         
+        [Inject] private MainMenuHandler _mainMenuHandler;
+        
         private bool _waitingForReachPoint = true;
         private Vector3 _distance = Vector3.zero;
         private int _finalValueOfPosition;
         
         private Rigidbody _capsuleRigidbody;
         private Movement _inputAction;
-        
+
+        private Coroutine _moveCoroutine;
+            
         private void Awake()
         {
             _capsuleRigidbody = GetComponent<Rigidbody>();
             _inputAction = new Movement();
             _inputAction.Input.Enable();
         }
-    
-        private void FixedUpdate()
+        
+        private void StartMove()
         {
-            Move();
+            _moveCoroutine = StartCoroutine(CoroutineMove());
+        }
+        
+        private IEnumerator CoroutineMove()
+        {
+            while (true)
+            {
+                Move();
+                yield return new WaitForFixedUpdate();
+            }
         }
 
         private void Move()
@@ -53,7 +69,7 @@ namespace Player
             }
             
         }
-        
+
         private void MoveDirectionTo(Vector3 position)
         {
             _capsuleRigidbody.MovePosition(transform.position + (position * _speed * Time.fixedDeltaTime));
@@ -66,6 +82,16 @@ namespace Player
                 _waitingForReachPoint = false;
             }
             else _waitingForReachPoint = true;
+        }
+        
+        private void OnEnable()
+        {
+            _mainMenuHandler.onStateMenuChanged += StartMove;
+        }
+
+        private void OnDisable()
+        {
+            _mainMenuHandler.onStateMenuChanged -= StartMove;
         }
     }
     
