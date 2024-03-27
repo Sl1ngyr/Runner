@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "931879453189",
+    "project_id": "d-runner-11ff1",
+    "storage_bucket": "d-runner-11ff1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:931879453189:android:1db0f9dc27b7ea0708d26c",
+        "android_client_info": {
+          "package_name": "com.BgGames.Runner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBin-KG21BwiZVOYuukrX-3xD76uH580m4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
