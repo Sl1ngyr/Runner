@@ -15,6 +15,7 @@ namespace Player.Animation
         private AnimationBehavior _currentAnimationBehavior;
 
         private Coroutine _animationCoroutine;
+        private bool _isEndAnimation = true;
 
         private void Awake()
         {
@@ -46,19 +47,21 @@ namespace Player.Animation
         {
             Vector2 inputVector = _inputAction.Input.Move.ReadValue<Vector2>();
             
-            if (inputVector.y > 0)
+            if (inputVector.y > 0 && _isEndAnimation)
             {
                 _currentAnimationBehavior.Exit();
                 _currentAnimationBehavior = new AnimationBehaviorJump(_animator);
                 _currentAnimationBehavior.Enter();
+                _isEndAnimation = false;
             }
-            else if (inputVector.y < 0)
+            else if (inputVector.y < 0 && _isEndAnimation)
             {
                 _currentAnimationBehavior.Exit();
                 _currentAnimationBehavior = new AnimationBehaviorSlide(_animator);
                 _currentAnimationBehavior.Enter();
+                _isEndAnimation = false;
             }
-            else
+            else if(_isEndAnimation)
             {
                 _currentAnimationBehavior.Exit();
                 _currentAnimationBehavior = new AnimationBehaviorRun(_animator);
@@ -74,6 +77,11 @@ namespace Player.Animation
         private void OnDisable()
         {
             _mainMenuHandler.onStateMenuChanged -= StartPlayAnimation;
+        }
+
+        private void TriggerActionEndAnimation()
+        {
+            _isEndAnimation = true;
         }
         
     }
