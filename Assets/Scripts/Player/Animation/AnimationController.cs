@@ -1,26 +1,31 @@
-﻿using MainMenu;
-using Player.AnimationStates;
-using UnityEngine;
+﻿using UnityEngine;
 using Zenject;
 using System.Collections;
+using Ad;
+using Player.Animation.AnimationStates;
+using UI.MainMenu;
 
 namespace Player.Animation
 {
     public class AnimationController : MonoBehaviour
     {
-        [Inject] private MainMenuHandler _mainMenuHandler;
-
+        [SerializeField] private CollisionDetector _collisionDetector;
+        
         private Animator _animator;
         private Movement _inputAction;
         private AnimationBehavior _currentAnimationBehavior;
+        
 
         private Coroutine _animationCoroutine;
         private bool _isEndAnimation = true;
 
+        [Inject] private MainMenuHandler _mainMenuHandler;
+        [Inject] private ReviveManager _reviveManager;
+        
         private void Awake()
         {
             _animator = GetComponent<Animator>();
-            
+
             _inputAction = new Movement();
             _inputAction.Input.Enable();
             
@@ -36,6 +41,7 @@ namespace Player.Animation
 
         private IEnumerator CoroutineAnimation()
         {
+            _isEndAnimation = true;
             while (true)
             {
                 PlayAnimation();
@@ -69,17 +75,29 @@ namespace Player.Animation
             }
         }
         
+        private void DeathPlayer()
+        {
+            StopCoroutine(_animationCoroutine);
+            _currentAnimationBehavior.Exit();
+            _currentAnimationBehavior = new AnimationBehaviorDeath(_animator);
+            _currentAnimationBehavior.Enter();
+        }
+        
         private void OnEnable()
         {
-            _mainMenuHandler.onStateMenuChanged += StartPlayAnimation;
+            _mainMenuHandler.onGameStarted += StartPlayAnimation;
+            _collisionDetector.onObstacleDetected += DeathPlayer;
+            _reviveManager.onAdToReviveCompleted += StartPlayAnimation;
         }
 
         private void OnDisable()
         {
-            _mainMenuHandler.onStateMenuChanged -= StartPlayAnimation;
+            _mainMenuHandler.onGameStarted -= StartPlayAnimation;
+            _collisionDetector.onObstacleDetected -= DeathPlayer;
+            _reviveManager.onAdToReviveCompleted -= StartPlayAnimation;
         }
 
-        private void TriggerActionEndAnimation()
+        private void StartAnimationAction()
         {
             _isEndAnimation = true;
         }

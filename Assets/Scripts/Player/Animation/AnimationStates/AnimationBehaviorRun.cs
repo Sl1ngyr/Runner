@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Player.AnimationStates
+namespace Player.Animation.AnimationStates
 {
     public class AnimationBehaviorRun : AnimationBehavior
     {
