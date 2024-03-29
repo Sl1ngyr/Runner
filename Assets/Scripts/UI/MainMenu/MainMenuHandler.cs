@@ -1,22 +1,25 @@
 ﻿using System;
+using Scene;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Zenject;
 
-namespace MainMenu
+namespace UI.MainMenu
 {
     public class MainMenuHandler : MonoBehaviour, IPointerDownHandler
     {
         [SerializeField] private Button _exitGame;
         [SerializeField] private Button _logOut;
-        [SerializeField] private int _authSceneBuildIndex;
+        [SerializeField] private int _logOutSceneBuildIndex = 0;
         
-        public event Action onStateMenuChanged;
+        [Inject] private SceneLoader _sceneLoader;
+        
+        public event Action onGameStarted;
         
         public void OnPointerDown(PointerEventData eventData)
         {
-            onStateMenuChanged?.Invoke();
+            onGameStarted?.Invoke();
             gameObject.SetActive(false);
         }
 
@@ -34,7 +37,7 @@ namespace MainMenu
 
         private void LogOut()
         {
-            SceneManager.LoadScene(_authSceneBuildIndex);
+            _sceneLoader.TransitionToSceneByIndex(_logOutSceneBuildIndex);
         }
         
         private void QuitGame()
