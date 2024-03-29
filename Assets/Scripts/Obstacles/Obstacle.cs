@@ -6,17 +6,37 @@ namespace Obstacles
     {
         [SerializeField] private float endPositionZToDeactivate;
         private float _speed;
+        private static bool _isStopMoveObject = false;
+
+        public static bool StopMoveObstacles
+        {
+            get => _isStopMoveObject;
+            set => _isStopMoveObject = value;
+        }
         
         public float Speed
         {
             set => _speed = value;
         }
-        
+
         private void Update()
         {
-            Move();
+            if (!_isStopMoveObject)
+            {
+                Move();
+            }
         }
 
+        private void StopMoving()
+        {
+            _isStopMoveObject = true;
+        }
+
+        private void StartMoving()
+        {
+            _isStopMoveObject = false;
+        }
+        
         private void Move()
         {
             if (gameObject.transform.position.z <= endPositionZToDeactivate)
@@ -30,5 +50,6 @@ namespace Obstacles
         {
             this.gameObject.SetActive(false);
         }
+
     }
 }

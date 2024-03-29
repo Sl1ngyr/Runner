@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace Obstacles
 {
-    public class ObstaclesObjectPool<T> where T : MonoBehaviour
+    public class ObstacleObjectPool<T> where T : MonoBehaviour
     {
         private T _prefab;
         private List<T> _objects;
 
-        public ObstaclesObjectPool(T prefab, int poolCout)
+        public ObstacleObjectPool(T prefab, int poolCout)
         {
             _prefab = prefab;
             _objects = new List<T>();
@@ -41,7 +41,7 @@ namespace Obstacles
             obj.gameObject.SetActive(false);
         }
 
-        public void DeactivateAllObject()
+        public void DeactivateObjects()
         {
             foreach (var obj in _objects)
             {

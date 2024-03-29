@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using MainMenu;
+using Ad;
+using Player;
+using UI.MainMenu;
 using UnityEngine;
 using Zenject;
 using Random = UnityEngine.Random;
@@ -23,10 +25,14 @@ namespace Obstacles
         [SerializeField] private int _timeToStartSpawn;
         [SerializeField] private int _timeToSpawnNextObstacle;
         
-        private List<ObstaclesObjectPool<Obstacle>> _pools;
+        private List<ObstacleObjectPool<Obstacle>> _pools;
         private Coroutine _spawnCoroutine;
         
         [Inject] private MainMenuHandler _mainMenuHandler;
+        [Inject] private CollisionDetector _collisionDetector;
+        [Inject] private EndGameHandler _endGameHandler;
+        [Inject] private ReviveManager _reviveManager;
+        
         
         private void Awake()
         {
@@ -40,6 +46,7 @@ namespace Obstacles
         
         private IEnumerator CoroutineSpawn()
         {
+            Obstacle.StopMoveObstacles = false;
             yield return new WaitForSeconds(_timeToStartSpawn);
             while (true)
             {
@@ -51,11 +58,11 @@ namespace Obstacles
         
         private void InitPool()
         {
-            _pools = new List<ObstaclesObjectPool<Obstacle>>();
+            _pools = new List<ObstacleObjectPool<Obstacle>>();
             
             for (int i = 0; i < _prefabs.Count; i++)
             {
-                _pools.Add(new ObstaclesObjectPool<Obstacle>(_prefabs[i],_poolCout));
+                _pools.Add(new ObstacleObjectPool<Obstacle>(_prefabs[i],_poolCout));
             }
         }
 
@@ -74,6 +81,20 @@ namespace Obstacles
             return position;
         }
 
+        private void StopAllObject()
+        {
+            Obstacle.StopMoveObstacles = true;
+            StopCoroutine(_spawnCoroutine);
+        }
+
+        private void DeactivateAllObjects()
+        {
+            foreach (var poolObj in _pools)
+            {
+                poolObj.DeactivateObjects();
+            }
+        }
+        
         private void IncreaseSpeed()
         {
             _speedObstacle += _increaseSpeed;
@@ -81,12 +102,17 @@ namespace Obstacles
         
         private void OnEnable()
         {
-            _mainMenuHandler.onStateMenuChanged += StartSpawnObstacle;
+            _mainMenuHandler.onGameStarted += StartSpawnObstacle;
+            _collisionDetector.onObstacleDetected += StopAllObject;
+            _endGameHandler.onEndGameTriggered += DeactivateAllObjects;
+            _reviveManager.onAdToReviveCompleted += StartSpawnObstacle;
         }
 
         private void OnDisable()
         {
-            _mainMenuHandler.onStateMenuChanged -= StartSpawnObstacle;
+            _mainMenuHandler.onGameStarted -= StartSpawnObstacle;
+            _collisionDetector.onObstacleDetected -= StopAllObject;
+            _endGameHandler.onEndGameTriggered -= DeactivateAllObjects;
         }
         
     }
