@@ -1,4 +1,4 @@
-using MainMenu;
+using UI.MainMenu;
 using UnityEngine;
 using Zenject;
 
@@ -10,7 +10,7 @@ namespace Installers
     
         public override void InstallBindings()
         {
-            Container.Bind<MainMenuHandler>().FromInstance(_mainMenuHandler);
+            Container.Bind<MainMenuHandler>().FromInstance(_mainMenuHandler).AsSingle();
         }
     }
 }
