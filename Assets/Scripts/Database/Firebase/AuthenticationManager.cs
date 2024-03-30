@@ -1,10 +1,11 @@
-using System;
 using System.Collections;
 using System.Threading.Tasks;
 using Firebase;
 using Firebase.Auth;
+using Scene;
 using TMPro;
 using UnityEngine;
+using Zenject;
 
 namespace Database.Firebase
 {
@@ -31,8 +32,8 @@ namespace Database.Firebase
         
         [Space] 
         [SerializeField] private int _gameSceneBuildIndex = 1;
-        
-        public event Action<int> onSceneLoaded;
+
+        [Inject] private SceneLoader _sceneLoader;
         
         private void Awake()
         {
@@ -139,7 +140,8 @@ namespace Database.Firebase
                         else
                         {
                             _warningRegisterText.text = "";
-                            onSceneLoaded?.Invoke(_gameSceneBuildIndex);
+                            
+                            _sceneLoader.TransitionToSceneByIndex(_gameSceneBuildIndex);
                         }
                     }
                 }
@@ -188,7 +190,8 @@ namespace Database.Firebase
                 _user = LoginTask.Result.User;
                 Debug.LogFormat("User signed in successfully: {0} ({1})", _user.DisplayName, _user.Email);
                 _warningLoginText.text = "";
-                onSceneLoaded?.Invoke(_gameSceneBuildIndex);
+                
+                _sceneLoader.TransitionToSceneByIndex(_gameSceneBuildIndex);
             }
         }
 
