@@ -1,6 +1,6 @@
-using System;
 using System.Collections;
-using MainMenu;
+using Ad;
+using UI.MainMenu;
 using UnityEngine;
 using Zenject;
 
@@ -11,20 +11,23 @@ namespace Player
         [SerializeField] private int _swipeDistance = 1;
         [SerializeField] private float _speed = 2;
         
-        [Inject] private MainMenuHandler _mainMenuHandler;
-        
         private bool _waitingForReachPoint = true;
         private Vector3 _distance = Vector3.zero;
         private int _finalValueOfPosition;
         
         private Rigidbody _capsuleRigidbody;
         private Movement _inputAction;
-
+        private CollisionDetector _collisionDetector;
         private Coroutine _moveCoroutine;
-            
+        
+        [Inject] private MainMenuHandler _mainMenuHandler;
+        [Inject] private ReviveManager _reviveManager; 
+        
         private void Awake()
         {
             _capsuleRigidbody = GetComponent<Rigidbody>();
+            _collisionDetector = GetComponent<CollisionDetector>();
+            
             _inputAction = new Movement();
             _inputAction.Input.Enable();
         }
@@ -32,6 +35,11 @@ namespace Player
         private void StartMove()
         {
             _moveCoroutine = StartCoroutine(CoroutineMove());
+        }
+
+        private void StopMove()
+        {
+            StopCoroutine(_moveCoroutine);
         }
         
         private IEnumerator CoroutineMove()
@@ -87,12 +95,16 @@ namespace Player
         
         private void OnEnable()
         {
-            _mainMenuHandler.onStateMenuChanged += StartMove;
+            _mainMenuHandler.onGameStarted += StartMove;
+            _collisionDetector.onObstacleDetected += StopMove;
+            _reviveManager.onAdToReviveCompleted += StartMove;
         }
 
         private void OnDisable()
         {
-            _mainMenuHandler.onStateMenuChanged -= StartMove;
+            _mainMenuHandler.onGameStarted -= StartMove;
+            _collisionDetector.onObstacleDetected -= StopMove;
+            _reviveManager.onAdToReviveCompleted -= StartMove;
         }
 
     }
