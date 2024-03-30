@@ -1,8 +1,8 @@
-﻿using Database.Firebase;
+﻿using Services.Database.Firebase;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Database
+namespace Services.Auth
 {
     public class AuthButtonsController : MonoBehaviour
     {
@@ -23,15 +23,6 @@ namespace Database
         [Space]
         [SerializeField] private AuthenticationManager _authenticationManager;
 
-        private void Start()
-        {
-            _signUp.onClick.AddListener(_authenticationManager.RegistrationButton);
-            _logIn.onClick.AddListener(_authenticationManager.LoginButton);
-
-            _transitionToLoginPage.onClick.AddListener(ActiveLoginPage);
-            _transitionToRegistrationPage.onClick.AddListener(ActiveRegistrationPage);
-        }
-        
         private void ActiveLoginPage()
         {
             _loginPage.gameObject.SetActive(true);
@@ -44,13 +35,22 @@ namespace Database
             _loginPage.gameObject.SetActive(false);
         }
 
-        private void OnDestroy()
+        private void OnEnable()
         {
-            _signUp.onClick.RemoveAllListeners();
-            _logIn.onClick.RemoveAllListeners();
+            _signUp.onClick.AddListener(_authenticationManager.RegistrationButton);
+            _logIn.onClick.AddListener(_authenticationManager.LoginButton);
 
-            _transitionToLoginPage.onClick.RemoveAllListeners();
-            _transitionToRegistrationPage.onClick.RemoveAllListeners();
+            _transitionToLoginPage.onClick.AddListener(ActiveLoginPage);
+            _transitionToRegistrationPage.onClick.AddListener(ActiveRegistrationPage);
+        }
+        
+        private void OnDisable()
+        {
+            _signUp.onClick.RemoveListener(_authenticationManager.RegistrationButton);
+            _logIn.onClick.RemoveListener(_authenticationManager.LoginButton);
+
+            _transitionToLoginPage.onClick.RemoveListener(ActiveLoginPage);
+            _transitionToRegistrationPage.onClick.RemoveListener(ActiveRegistrationPage);
         }
     }
 }

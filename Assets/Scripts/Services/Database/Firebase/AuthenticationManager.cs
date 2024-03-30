@@ -2,12 +2,12 @@ using System.Collections;
 using System.Threading.Tasks;
 using Firebase;
 using Firebase.Auth;
-using Scene;
+using Services.Scene;
 using TMPro;
 using UnityEngine;
 using Zenject;
 
-namespace Database.Firebase
+namespace Services.Database.Firebase
 {
     public class AuthenticationManager : MonoBehaviour
     {

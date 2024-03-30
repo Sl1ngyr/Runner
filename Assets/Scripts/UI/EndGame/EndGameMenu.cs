@@ -1,9 +1,8 @@
-﻿using Ad;
-using DG.Tweening;
-using Player;
+﻿using DG.Tweening;
+using Services;
+using Services.Ad;
 using TMPro;
 using UnityEngine;
-using Zenject;
 
 namespace UI.EndGame
 {
@@ -19,9 +18,7 @@ namespace UI.EndGame
         [SerializeField] private float duration;
         [SerializeField] private float _fadeValue = 0;
         [SerializeField] private float _appearValue = 1;
-        
-        [Inject] private EndGameHandler _endGameHandler;
-        
+
         private void AnimationEndGameText()
         {
             var seq = DOTween.Sequence();
@@ -42,14 +39,14 @@ namespace UI.EndGame
         
         private void OnEnable()
         {
-            _endGameHandler.onEndGameTriggered += EnableEndGameMenu;
-            _reviveManager.onAdToReviveCompleted += DisableEndGameMenu;
+            EventBus.Instance.onPlayerDead += EnableEndGameMenu;
+            EventBus.Instance.onAdToReviveCompleted += DisableEndGameMenu;
         }
 
         private void OnDisable()
         {
-            _endGameHandler.onEndGameTriggered -= EnableEndGameMenu;
-            _reviveManager.onAdToReviveCompleted -= DisableEndGameMenu;
+            EventBus.Instance.onPlayerDead -= EnableEndGameMenu;
+            EventBus.Instance.onAdToReviveCompleted -= DisableEndGameMenu;
         }
         
     }

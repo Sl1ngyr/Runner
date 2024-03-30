@@ -1,9 +1,8 @@
-﻿using System;
-using UnityEngine.UI;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Advertisements;
+using UnityEngine.UI;
 
-namespace Ad
+namespace Services.Ad
 {
     public class ReviveManager : MonoBehaviour, IUnityAdsInitializationListener, IUnityAdsLoadListener, IUnityAdsShowListener
     {
@@ -16,8 +15,6 @@ namespace Ad
         
         private string _gameId;
         private string _adUnitId = null;
-        
-        public event Action onAdToReviveCompleted;
         
         private void Awake()
         {
@@ -73,7 +70,7 @@ namespace Ad
             if (adUnitId.Equals(_adUnitId) && showCompletionState.Equals(UnityAdsShowCompletionState.COMPLETED))
             {
                 Debug.Log("Unity Ads Rewarded Ad Completed");
-                onAdToReviveCompleted?.Invoke();
+                EventBus.Instance.onAdToReviveCompleted?.Invoke();
             }
         }
         

@@ -1,12 +1,8 @@
 ﻿using System.Collections;
-using Ad;
-using Player;
 using TMPro;
-using UI.MainMenu;
 using UnityEngine;
-using Zenject;
 
-namespace UI.Score
+namespace Services.Score
 {
     public class ScoreSystemManager : MonoBehaviour
     {
@@ -17,12 +13,7 @@ namespace UI.Score
 
         private int _scoreCalculation;
         private Coroutine _startCalculationScoreCoroutine;
-        
-        [Inject] private MainMenuHandler _mainMenuHandler;
-        [Inject] private CollisionDetector _collisionDetector;
-        [Inject] private EndGameHandler _endGameHandler;
-        [Inject] private ReviveManager _reviveManager;
-        
+
         private void StartCalculationScore()
         {
             ActiveScoreText();
@@ -61,18 +52,18 @@ namespace UI.Score
         
         private void OnEnable()
         {
-            _mainMenuHandler.onGameStarted += StartCalculationScore;
-            _collisionDetector.onObstacleDetected += StopCalculationScore;
-            _endGameHandler.onEndGameTriggered += DisableScoreText;
-            _reviveManager.onAdToReviveCompleted += StartCalculationScore;
+            EventBus.Instance.onGameStarted += StartCalculationScore;
+            EventBus.Instance.onPlayerCollideWithObstacle += StopCalculationScore;
+            EventBus.Instance.onPlayerDead += DisableScoreText;
+            EventBus.Instance.onAdToReviveCompleted += StartCalculationScore;
         }
 
         private void OnDisable()
         {
-            _mainMenuHandler.onGameStarted -= StartCalculationScore;
-            _collisionDetector.onObstacleDetected -= StopCalculationScore;
-            _endGameHandler.onEndGameTriggered -= DisableScoreText;
-            _reviveManager.onAdToReviveCompleted -= StartCalculationScore;
+            EventBus.Instance.onGameStarted -= StartCalculationScore;
+            EventBus.Instance.onPlayerCollideWithObstacle -= StopCalculationScore;
+            EventBus.Instance.onPlayerDead -= DisableScoreText;
+            EventBus.Instance.onAdToReviveCompleted -= StartCalculationScore;
         }
         
     }

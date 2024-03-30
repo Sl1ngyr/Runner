@@ -1,8 +1,6 @@
 using System.Collections;
-using Ad;
-using UI.MainMenu;
+using Services;
 using UnityEngine;
-using Zenject;
 
 namespace Player
 {
@@ -17,17 +15,12 @@ namespace Player
         
         private Rigidbody _capsuleRigidbody;
         private Movement _inputAction;
-        private CollisionDetector _collisionDetector;
         private Coroutine _moveCoroutine;
-        
-        [Inject] private MainMenuHandler _mainMenuHandler;
-        [Inject] private ReviveManager _reviveManager; 
-        
+
         private void Awake()
         {
             _capsuleRigidbody = GetComponent<Rigidbody>();
-            _collisionDetector = GetComponent<CollisionDetector>();
-            
+
             _inputAction = new Movement();
             _inputAction.Input.Enable();
         }
@@ -95,16 +88,16 @@ namespace Player
         
         private void OnEnable()
         {
-            _mainMenuHandler.onGameStarted += StartMove;
-            _collisionDetector.onObstacleDetected += StopMove;
-            _reviveManager.onAdToReviveCompleted += StartMove;
+            EventBus.Instance.onGameStarted += StartMove;
+            EventBus.Instance.onPlayerCollideWithObstacle += StopMove;
+            EventBus.Instance.onAdToReviveCompleted += StartMove;
         }
 
         private void OnDisable()
         {
-            _mainMenuHandler.onGameStarted -= StartMove;
-            _collisionDetector.onObstacleDetected -= StopMove;
-            _reviveManager.onAdToReviveCompleted -= StartMove;
+            EventBus.Instance.onGameStarted -= StartMove;
+            EventBus.Instance.onPlayerCollideWithObstacle -= StopMove;
+            EventBus.Instance.onAdToReviveCompleted -= StartMove;
         }
 
     }

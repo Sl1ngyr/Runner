@@ -1,16 +1,12 @@
 ﻿using UnityEngine;
-using Zenject;
 using System.Collections;
-using Ad;
 using Player.Animation.AnimationStates;
-using UI.MainMenu;
+using Services;
 
 namespace Player.Animation
 {
     public class AnimationController : MonoBehaviour
     {
-        [SerializeField] private CollisionDetector _collisionDetector;
-        
         private Animator _animator;
         private Movement _inputAction;
         private AnimationBehavior _currentAnimationBehavior;
@@ -19,9 +15,6 @@ namespace Player.Animation
         private Coroutine _animationCoroutine;
         private bool _isEndAnimation = true;
 
-        [Inject] private MainMenuHandler _mainMenuHandler;
-        [Inject] private ReviveManager _reviveManager;
-        
         private void Awake()
         {
             _animator = GetComponent<Animator>();
@@ -85,16 +78,16 @@ namespace Player.Animation
         
         private void OnEnable()
         {
-            _mainMenuHandler.onGameStarted += StartPlayAnimation;
-            _collisionDetector.onObstacleDetected += DeathPlayer;
-            _reviveManager.onAdToReviveCompleted += StartPlayAnimation;
+            EventBus.Instance.onGameStarted += StartPlayAnimation;
+            EventBus.Instance.onPlayerCollideWithObstacle += DeathPlayer;
+            EventBus.Instance.onAdToReviveCompleted += StartPlayAnimation;
         }
 
         private void OnDisable()
         {
-            _mainMenuHandler.onGameStarted -= StartPlayAnimation;
-            _collisionDetector.onObstacleDetected -= DeathPlayer;
-            _reviveManager.onAdToReviveCompleted -= StartPlayAnimation;
+            EventBus.Instance.onGameStarted -= StartPlayAnimation;
+            EventBus.Instance.onPlayerCollideWithObstacle -= DeathPlayer;
+            EventBus.Instance.onAdToReviveCompleted -= StartPlayAnimation;
         }
 
         private void StartAnimationAction()

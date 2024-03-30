@@ -1,5 +1,5 @@
-﻿using System;
-using Scene;
+﻿using Services;
+using Services.Scene;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -14,12 +14,10 @@ namespace UI.MainMenu
         [SerializeField] private int _logOutSceneBuildIndex = 0;
         
         [Inject] private SceneLoader _sceneLoader;
-        
-        public event Action onGameStarted;
-        
+
         public void OnPointerDown(PointerEventData eventData)
         {
-            onGameStarted?.Invoke();
+            EventBus.Instance.onGameStarted?.Invoke();
             gameObject.SetActive(false);
         }
 

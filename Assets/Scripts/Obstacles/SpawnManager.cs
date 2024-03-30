@@ -1,10 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Ad;
-using Player;
-using UI.MainMenu;
+using Services;
 using UnityEngine;
-using Zenject;
 using Random = UnityEngine.Random;
 
 namespace Obstacles
@@ -27,13 +24,7 @@ namespace Obstacles
         
         private List<ObstacleObjectPool<Obstacle>> _pools;
         private Coroutine _spawnCoroutine;
-        
-        [Inject] private MainMenuHandler _mainMenuHandler;
-        [Inject] private CollisionDetector _collisionDetector;
-        [Inject] private EndGameHandler _endGameHandler;
-        [Inject] private ReviveManager _reviveManager;
-        
-        
+
         private void Awake()
         {
             InitPool();
@@ -102,17 +93,18 @@ namespace Obstacles
         
         private void OnEnable()
         {
-            _mainMenuHandler.onGameStarted += StartSpawnObstacle;
-            _collisionDetector.onObstacleDetected += StopAllObject;
-            _endGameHandler.onEndGameTriggered += DeactivateAllObjects;
-            _reviveManager.onAdToReviveCompleted += StartSpawnObstacle;
+            EventBus.Instance.onGameStarted += StartSpawnObstacle;
+            EventBus.Instance.onPlayerCollideWithObstacle += StopAllObject;
+            EventBus.Instance.onPlayerDead += DeactivateAllObjects;
+            EventBus.Instance.onAdToReviveCompleted += StartSpawnObstacle;
         }
 
         private void OnDisable()
         {
-            _mainMenuHandler.onGameStarted -= StartSpawnObstacle;
-            _collisionDetector.onObstacleDetected -= StopAllObject;
-            _endGameHandler.onEndGameTriggered -= DeactivateAllObjects;
+            EventBus.Instance.onGameStarted -= StartSpawnObstacle;
+            EventBus.Instance.onPlayerCollideWithObstacle -= StopAllObject;
+            EventBus.Instance.onPlayerDead -= DeactivateAllObjects;
+            EventBus.Instance.onAdToReviveCompleted -= StartSpawnObstacle;
         }
         
     }

@@ -1,15 +1,14 @@
-﻿using System;
+﻿using Services;
 using UnityEngine;
 
 namespace Player
 {
     public class EndGameHandler : MonoBehaviour
     {
-        public event Action onEndGameTriggered;
-        
+
         private void EndDeathAnimation()
         {
-            onEndGameTriggered?.Invoke();
+            EventBus.Instance.onPlayerDead?.Invoke();
         }
     }
 }
