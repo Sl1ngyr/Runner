@@ -1,91 +1,98 @@
-using System.Collections;
-using Services;
 using UnityEngine;
+using EventBus = Services.EventBus;
+using System;
 
 namespace Player
 {
     public class MotionHandler : MonoBehaviour
     {
-        [SerializeField] private int _swipeDistance = 1;
-        [SerializeField] private float _speed = 2;
+        [SerializeField] private float _swipeResistance = 100;
         
-        private bool _waitingForReachPoint = true;
-        private Vector3 _distance = Vector3.zero;
-        private int _finalValueOfPosition;
+        private const int RIGHT_BORDER_POSISITION_X = 1;
+        private const int LEFT_BORDER_POSISITION_X = -1;
+
+        private int _currentBorderPosition;
         
-        private Rigidbody _capsuleRigidbody;
-        private Movement _inputAction;
-        private Coroutine _moveCoroutine;
+        private bool isStartMoving = false;
+        
+        private Movement _movementInputAction;
+
+
+        private Vector2 _initialPosition;
+        private Vector2 _currentPosition => _movementInputAction.Input.Position.ReadValue<Vector2>();
+
+        public event Action<float> onStartPlayAnimation;
 
         private void Awake()
         {
-            _capsuleRigidbody = GetComponent<Rigidbody>();
+            _movementInputAction = new Movement();
+            _movementInputAction.Input.Enable();
 
-            _inputAction = new Movement();
-            _inputAction.Input.Enable();
-        }
-        
-        private void StartMove()
-        {
-            _moveCoroutine = StartCoroutine(CoroutineMove());
+#if UNITY_EDITOR
+            _movementInputAction.Input.Move.performed += _ => Move();
+            _movementInputAction.Input.Move.performed += _ => PlayAnimationForKeyboard();
+      
+#elif UNITY_ANDROID
+            _movementInputAction.Input.TouchPress.performed += _ => { _initialPosition = _currentPosition; };
+            _movementInputAction.Input.TouchPress.canceled += _ => DetectSwipe();
+#endif
         }
 
-        private void StopMove()
+        private void DetectSwipe()
         {
-            StopCoroutine(_moveCoroutine);
-        }
-        
-        private IEnumerator CoroutineMove()
-        {
-            while (true)
+            Vector2 delta = _currentPosition - _initialPosition;
+
+            if (Mathf.Abs(delta.x) > _swipeResistance)
             {
                 Move();
-                yield return new WaitForFixedUpdate();
+            }
+            else if (Mathf.Abs(delta.y) > _swipeResistance && isStartMoving)
+            {
+                onStartPlayAnimation?.Invoke(delta.y);
             }
         }
 
         private void Move()
         {
-            if (_waitingForReachPoint)
+            Vector2 inputVector = _movementInputAction.Input.Move.ReadValue<Vector2>();
+
+            if (isStartMoving)
             {
-                Vector2 inputVector = _inputAction.Input.Move.ReadValue<Vector2>();
-                
-                _distance = Vector3.zero;
-                
-                if (inputVector.x > 0 && transform.position.x < _swipeDistance)
+                if (inputVector.x > 0 && _currentBorderPosition != RIGHT_BORDER_POSISITION_X)
                 {
-                    _distance.x += _swipeDistance;
-                    _finalValueOfPosition = (int)transform.position.x + (int)_distance.x;
-                    MoveDirectionTo(_distance);
+                    _currentBorderPosition += RIGHT_BORDER_POSISITION_X;
+
+                    transform.position = new Vector3(_currentBorderPosition, transform.position.y, 0);
                 }
-                else if (inputVector.x < 0 && transform.position.x  > -_swipeDistance)
+                else if (inputVector.x < 0 && _currentBorderPosition != LEFT_BORDER_POSISITION_X)
                 {
-                    _distance.x -= _swipeDistance;
-                    _finalValueOfPosition = (int)transform.position.x + (int)_distance.x;
-                    MoveDirectionTo(_distance);
+                    _currentBorderPosition += LEFT_BORDER_POSISITION_X;
+
+                    transform.position = new Vector3(_currentBorderPosition, transform.position.y, 0);
                 }
             }
-            else
-            {
-                MoveDirectionTo(_distance);
-            }
-            
+
         }
 
-        private void MoveDirectionTo(Vector3 position)
+        private void PlayAnimationForKeyboard()
         {
-            _capsuleRigidbody.MovePosition(transform.position + (position * _speed * Time.fixedDeltaTime));
-            if (_finalValueOfPosition > transform.position.x && position.x == _swipeDistance)
+            Vector2 inputVector = _movementInputAction.Input.Move.ReadValue<Vector2>();
+            if (isStartMoving)
             {
-                _waitingForReachPoint = false;
+                onStartPlayAnimation?.Invoke(inputVector.y);
             }
-            else if (_finalValueOfPosition < transform.position.x && position.x == -_swipeDistance)
-            {
-                _waitingForReachPoint = false;
-            }
-            else _waitingForReachPoint = true;
         }
         
+        private void StartMove()
+        {
+            isStartMoving = true;
+        }
+
+        private void StopMove()
+        {
+            isStartMoving = false;
+        }
+
         private void OnEnable()
         {
             EventBus.Instance.onGameStarted += StartMove;

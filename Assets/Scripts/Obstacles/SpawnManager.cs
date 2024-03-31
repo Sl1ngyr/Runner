@@ -66,7 +66,7 @@ namespace Obstacles
 
         private Vector3 SetPosition()
         {
-            var random = Random.Range(_minStartPositionX, _maxStartPositionX);
+            var random = Random.Range(_minStartPositionX, 2);
             var position = new Vector3(random, 0, _startPositionZ);
 
             return position;

@@ -13,6 +13,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "TouchPress",
+                    "type": "Button",
+                    "id": "dd2799d8-1ff7-4553-9f21-0a5d21b71d05",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Position",
+                    "type": "Value",
+                    "id": "b3d39e3d-c671-4ffa-8e3e-c7b997d39310",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -30,7 +48,7 @@
                 {
                     "name": "up",
                     "id": "2c11b492-61b1-46ec-91b8-9082a54496ed",
-                    "path": "<Touchscreen>/delta/up",
+                    "path": "<Touchscreen>/primaryTouch/delta/up",
                     "interactions": "",
                     "processors": "",
                     "groups": "Android",
@@ -41,7 +59,7 @@
                 {
                     "name": "down",
                     "id": "0fcbe8b0-8bd5-42eb-9ed2-5baff6a0c974",
-                    "path": "<Touchscreen>/delta/down",
+                    "path": "<Touchscreen>/primaryTouch/delta/down",
                     "interactions": "",
                     "processors": "",
                     "groups": "Android",
@@ -52,7 +70,7 @@
                 {
                     "name": "left",
                     "id": "679162dc-4b77-40d9-afd3-289d0c138c07",
-                    "path": "<Touchscreen>/delta/left",
+                    "path": "<Touchscreen>/primaryTouch/delta/left",
                     "interactions": "",
                     "processors": "",
                     "groups": "Android",
@@ -63,7 +81,7 @@
                 {
                     "name": "right",
                     "id": "8145cc3f-df3b-41bb-a0f1-389cb5e9cdb2",
-                    "path": "<Touchscreen>/delta/right",
+                    "path": "<Touchscreen>/primaryTouch/delta/right",
                     "interactions": "",
                     "processors": "",
                     "groups": "Android",
@@ -180,6 +198,28 @@
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "638550ba-a3fe-4145-82c3-596cc5a9bd42",
+                    "path": "<Touchscreen>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Android",
+                    "action": "Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6243a739-c752-47ba-a5a8-dc2c6cc233fa",
+                    "path": "<Touchscreen>/Press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Android",
+                    "action": "TouchPress",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

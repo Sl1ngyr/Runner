@@ -5,7 +5,9 @@ namespace Obstacles
     public class Obstacle : MonoBehaviour
     {
         [SerializeField] private float endPositionZToDeactivate;
+        
         private float _speed;
+        
         private static bool _isStopMoveObject = false;
 
         public static bool StopMoveObstacles

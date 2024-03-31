@@ -35,6 +35,24 @@ public partial class @Movement: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""TouchPress"",
+                    ""type"": ""Button"",
+                    ""id"": ""dd2799d8-1ff7-4553-9f21-0a5d21b71d05"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Position"",
+                    ""type"": ""Value"",
+                    ""id"": ""b3d39e3d-c671-4ffa-8e3e-c7b997d39310"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -52,7 +70,7 @@ public partial class @Movement: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""up"",
                     ""id"": ""2c11b492-61b1-46ec-91b8-9082a54496ed"",
-                    ""path"": ""<Touchscreen>/delta/up"",
+                    ""path"": ""<Touchscreen>/primaryTouch/delta/up"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Android"",
@@ -63,7 +81,7 @@ public partial class @Movement: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""down"",
                     ""id"": ""0fcbe8b0-8bd5-42eb-9ed2-5baff6a0c974"",
-                    ""path"": ""<Touchscreen>/delta/down"",
+                    ""path"": ""<Touchscreen>/primaryTouch/delta/down"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Android"",
@@ -74,7 +92,7 @@ public partial class @Movement: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""left"",
                     ""id"": ""679162dc-4b77-40d9-afd3-289d0c138c07"",
-                    ""path"": ""<Touchscreen>/delta/left"",
+                    ""path"": ""<Touchscreen>/primaryTouch/delta/left"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Android"",
@@ -85,7 +103,7 @@ public partial class @Movement: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""right"",
                     ""id"": ""8145cc3f-df3b-41bb-a0f1-389cb5e9cdb2"",
-                    ""path"": ""<Touchscreen>/delta/right"",
+                    ""path"": ""<Touchscreen>/primaryTouch/delta/right"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Android"",
@@ -202,6 +220,28 @@ public partial class @Movement: IInputActionCollection2, IDisposable
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""638550ba-a3fe-4145-82c3-596cc5a9bd42"",
+                    ""path"": ""<Touchscreen>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Android"",
+                    ""action"": ""Position"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6243a739-c752-47ba-a5a8-dc2c6cc233fa"",
+                    ""path"": ""<Touchscreen>/Press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Android"",
+                    ""action"": ""TouchPress"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -227,6 +267,8 @@ public partial class @Movement: IInputActionCollection2, IDisposable
         // Input
         m_Input = asset.FindActionMap("Input", throwIfNotFound: true);
         m_Input_Move = m_Input.FindAction("Move", throwIfNotFound: true);
+        m_Input_TouchPress = m_Input.FindAction("TouchPress", throwIfNotFound: true);
+        m_Input_Position = m_Input.FindAction("Position", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -289,11 +331,15 @@ public partial class @Movement: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Input;
     private List<IInputActions> m_InputActionsCallbackInterfaces = new List<IInputActions>();
     private readonly InputAction m_Input_Move;
+    private readonly InputAction m_Input_TouchPress;
+    private readonly InputAction m_Input_Position;
     public struct InputActions
     {
         private @Movement m_Wrapper;
         public InputActions(@Movement wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Input_Move;
+        public InputAction @TouchPress => m_Wrapper.m_Input_TouchPress;
+        public InputAction @Position => m_Wrapper.m_Input_Position;
         public InputActionMap Get() { return m_Wrapper.m_Input; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -306,6 +352,12 @@ public partial class @Movement: IInputActionCollection2, IDisposable
             @Move.started += instance.OnMove;
             @Move.performed += instance.OnMove;
             @Move.canceled += instance.OnMove;
+            @TouchPress.started += instance.OnTouchPress;
+            @TouchPress.performed += instance.OnTouchPress;
+            @TouchPress.canceled += instance.OnTouchPress;
+            @Position.started += instance.OnPosition;
+            @Position.performed += instance.OnPosition;
+            @Position.canceled += instance.OnPosition;
         }
 
         private void UnregisterCallbacks(IInputActions instance)
@@ -313,6 +365,12 @@ public partial class @Movement: IInputActionCollection2, IDisposable
             @Move.started -= instance.OnMove;
             @Move.performed -= instance.OnMove;
             @Move.canceled -= instance.OnMove;
+            @TouchPress.started -= instance.OnTouchPress;
+            @TouchPress.performed -= instance.OnTouchPress;
+            @TouchPress.canceled -= instance.OnTouchPress;
+            @Position.started -= instance.OnPosition;
+            @Position.performed -= instance.OnPosition;
+            @Position.canceled -= instance.OnPosition;
         }
 
         public void RemoveCallbacks(IInputActions instance)
@@ -360,5 +418,7 @@ public partial class @Movement: IInputActionCollection2, IDisposable
     public interface IInputActions
     {
         void OnMove(InputAction.CallbackContext context);
+        void OnTouchPress(InputAction.CallbackContext context);
+        void OnPosition(InputAction.CallbackContext context);
     }
 }
