@@ -10,12 +10,12 @@ namespace Player.Animation.AnimationStates
 
         public override void Enter()
         {
-            Animator.SetBool("IsDeath", true);
+            Animator.SetBool(AnimationDescription.PLAYER_DEATH, true);
         }
 
         public override void Exit()
         {
-            Animator.SetBool("IsDeath", false);
+            Animator.SetBool(AnimationDescription.PLAYER_DEATH, false);
         }
     }
 }

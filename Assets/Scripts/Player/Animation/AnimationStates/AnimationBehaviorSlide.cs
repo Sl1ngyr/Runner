@@ -10,12 +10,12 @@ namespace Player.Animation.AnimationStates
         
         public override void Enter()
         {
-            Animator.SetBool("IsSliding", true);
+            Animator.SetBool(AnimationDescription.PLAYER_SLIDE, true);
         }
 
         public override void Exit()
         {
-            Animator.SetBool("IsSliding", false);
+            Animator.SetBool(AnimationDescription.PLAYER_SLIDE, false);
         }
     }
 }

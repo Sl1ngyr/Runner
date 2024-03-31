@@ -10,12 +10,12 @@ namespace Player.Animation.AnimationStates
         
         public override void Enter()
         {
-            Animator.SetBool("IsJumping", true);
+            Animator.SetBool(AnimationDescription.PLAYER_JUMP, true);
         }
         
         public override void Exit()
         {
-            Animator.SetBool("IsJumping", false);
+            Animator.SetBool(AnimationDescription.PLAYER_JUMP, false);
         }
     }
 }

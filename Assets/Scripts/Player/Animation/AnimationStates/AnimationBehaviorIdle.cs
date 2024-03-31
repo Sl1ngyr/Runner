@@ -10,12 +10,12 @@ namespace Player.Animation.AnimationStates
         
         public override void Enter()
         {
-            Animator.SetBool("IsIdle", true);
+            Animator.SetBool(AnimationDescription.PLAYER_IDLE, true);
         }
 
         public override void Exit()
         {
-            Animator.SetBool("IsIdle", false);
+            Animator.SetBool(AnimationDescription.PLAYER_IDLE, false);
         }
         
     }
