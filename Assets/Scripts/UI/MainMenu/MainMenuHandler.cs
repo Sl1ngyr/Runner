@@ -1,9 +1,9 @@
-﻿using Services;
-using Services.Scene;
+﻿using Services.Scene;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Zenject;
+using EventBus = Services.EventBus;
 
 namespace UI.MainMenu
 {
@@ -14,13 +14,15 @@ namespace UI.MainMenu
         [SerializeField] private int _logOutSceneBuildIndex = 0;
         
         [Inject] private SceneLoader _sceneLoader;
-
+        
+        [SerializeField] private Button _button;
+        
         public void OnPointerDown(PointerEventData eventData)
         {
             EventBus.Instance.onGameStarted?.Invoke();
             gameObject.SetActive(false);
         }
-
+        
         private void OnEnable()
         {
             _exitGame.onClick.AddListener(QuitGame);

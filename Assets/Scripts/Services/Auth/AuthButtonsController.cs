@@ -1,5 +1,6 @@
 ﻿using Services.Database.Firebase;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Services.Auth
@@ -20,8 +21,9 @@ namespace Services.Auth
         [SerializeField] private Canvas _registrationPage;
         [SerializeField] private Canvas _loginPage;
 
+        [FormerlySerializedAs("_authenticationManager")]
         [Space]
-        [SerializeField] private AuthenticationManager _authenticationManager;
+        [SerializeField] private DatabaseManager databaseManager;
 
         private void ActiveLoginPage()
         {
@@ -37,8 +39,8 @@ namespace Services.Auth
 
         private void OnEnable()
         {
-            _signUp.onClick.AddListener(_authenticationManager.RegistrationButton);
-            _logIn.onClick.AddListener(_authenticationManager.LoginButton);
+            _signUp.onClick.AddListener(databaseManager.RegistrationButton);
+            _logIn.onClick.AddListener(databaseManager.LoginButton);
 
             _transitionToLoginPage.onClick.AddListener(ActiveLoginPage);
             _transitionToRegistrationPage.onClick.AddListener(ActiveRegistrationPage);
@@ -46,8 +48,8 @@ namespace Services.Auth
         
         private void OnDisable()
         {
-            _signUp.onClick.RemoveListener(_authenticationManager.RegistrationButton);
-            _logIn.onClick.RemoveListener(_authenticationManager.LoginButton);
+            _signUp.onClick.RemoveListener(databaseManager.RegistrationButton);
+            _logIn.onClick.RemoveListener(databaseManager.LoginButton);
 
             _transitionToLoginPage.onClick.RemoveListener(ActiveLoginPage);
             _transitionToRegistrationPage.onClick.RemoveListener(ActiveRegistrationPage);

@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Services.Database.Firebase;
 using TMPro;
 using UnityEngine;
 
@@ -47,6 +48,7 @@ namespace Services.Score
 
         private void DisableScoreText()
         {
+            StartCoroutine(DatabaseManager.Instance.UpdateScoreDatabase(_scoreCalculation));
             _scoreText.gameObject.SetActive(false);
         }
         
