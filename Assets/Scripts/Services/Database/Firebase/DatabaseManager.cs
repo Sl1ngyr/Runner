@@ -204,7 +204,9 @@ namespace Services.Database.Firebase
             else
             {
                 _user = LoginTask.Result.User;
-                StartCoroutine(LoadUserData());
+                
+                yield return StartCoroutine(LoadUserData());
+
                 Debug.LogFormat("User signed in successfully: {0} ({1})", _user.DisplayName, _user.Email);
                 _warningLoginText.text = "";
                 _sceneLoader.TransitionToSceneByIndex(_gameSceneBuildIndex);
@@ -262,13 +264,13 @@ namespace Services.Database.Firebase
         private IEnumerator LoadUserData()
         {
             var dbTask = _databaseReference.Child("users").Child(_user.UserId).GetValueAsync();
-
             yield return new WaitUntil(predicate: () => dbTask.IsCompleted);
 
             if (dbTask.Exception != null)
             {
                 Debug.LogWarning(message: $"Failed to register task with {dbTask.Exception}");
             }
+            
             else if (dbTask.Result.Value == null)
             {
                 _score = 0;
@@ -278,6 +280,7 @@ namespace Services.Database.Firebase
                 DataSnapshot snapshot = dbTask.Result;
                 _score = int.Parse(snapshot.Child("score").Value.ToString());
             }
+
         }
         
         public IEnumerator LoadLeaderboardData(List<int> scores, List<string> usernames, Action onComplete)

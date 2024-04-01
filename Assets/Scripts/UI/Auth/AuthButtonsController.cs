@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-namespace Services.Auth
+namespace UI.Auth
 {
     public class AuthButtonsController : MonoBehaviour
     {

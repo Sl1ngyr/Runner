@@ -1,5 +1,4 @@
 ﻿using Services;
-using Services.Database.Firebase;
 using UnityEngine;
 
 namespace Player
