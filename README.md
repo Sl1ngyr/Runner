@@ -11,3 +11,4 @@ For the project, I used such technologies as
 - Zenject
 - Firebase
 - Unity Monetization
+- Cinemachine
