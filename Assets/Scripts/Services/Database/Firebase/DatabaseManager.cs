@@ -40,9 +40,7 @@ namespace Services.Database.Firebase
 
         private string _username;
         private int _score;
-        private List<int> _scoreUsers = new List<int>();
-        private List<string> _usernameUsers = new List<string>();
-        
+
         [Inject] private SceneLoader _sceneLoader;
         
         private static DatabaseManager _instance;
@@ -206,9 +204,9 @@ namespace Services.Database.Firebase
             else
             {
                 _user = LoginTask.Result.User;
+                StartCoroutine(LoadUserData());
                 Debug.LogFormat("User signed in successfully: {0} ({1})", _user.DisplayName, _user.Email);
                 _warningLoginText.text = "";
-                
                 _sceneLoader.TransitionToSceneByIndex(_gameSceneBuildIndex);
             }
         }
@@ -261,19 +259,40 @@ namespace Services.Database.Firebase
             }
         }
         
-        public IEnumerator LoadLeaderboardData(List<int> scores, List<string> usernames, Action onComplete)
+        private IEnumerator LoadUserData()
         {
-            var DBTask = _databaseReference.Child("users").OrderByChild("score").GetValueAsync();
+            var dbTask = _databaseReference.Child("users").Child(_user.UserId).GetValueAsync();
 
-            yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
+            yield return new WaitUntil(predicate: () => dbTask.IsCompleted);
 
-            if (DBTask.Exception != null)
+            if (dbTask.Exception != null)
             {
-                Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+                Debug.LogWarning(message: $"Failed to register task with {dbTask.Exception}");
+            }
+            else if (dbTask.Result.Value == null)
+            {
+                _score = 0;
             }
             else
             {
-                DataSnapshot snapshot = DBTask.Result;
+                DataSnapshot snapshot = dbTask.Result;
+                _score = int.Parse(snapshot.Child("score").Value.ToString());
+            }
+        }
+        
+        public IEnumerator LoadLeaderboardData(List<int> scores, List<string> usernames, Action onComplete)
+        {
+            var dbTask = _databaseReference.Child("users").OrderByChild("score").GetValueAsync();
+
+            yield return new WaitUntil(predicate: () => dbTask.IsCompleted);
+
+            if (dbTask.Exception != null)
+            {
+                Debug.LogWarning(message: $"Failed to register task with {dbTask.Exception}");
+            }
+            else
+            {
+                DataSnapshot snapshot = dbTask.Result;
                 
                 foreach (DataSnapshot childSnapshot in snapshot.Children.Reverse<DataSnapshot>())
                 {
