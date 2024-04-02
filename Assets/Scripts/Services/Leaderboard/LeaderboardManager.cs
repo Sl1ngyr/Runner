@@ -25,7 +25,7 @@ namespace Services.Leaderboard
         private List<LeaderboardData> _leaderboardData = new List<LeaderboardData>();
 
         [SerializeField] private Canvas _leaderbordCanvas;
-        [SerializeField] private CalculationHighscore leaderbordData;
+        [SerializeField] private LeaderboardRowsManager _leaderboardRowsManager;
         
         [SerializeField] private Button _openLeaderboard;
         [SerializeField] private Button _closeLeaderboard;
@@ -44,9 +44,9 @@ namespace Services.Leaderboard
                         _leaderboardData.Add(new LeaderboardData(_usernames[i], _scores[i]));
                     }
 
-                    GetHighScores(_leaderboardData);
+                    _leaderboardData = SortLeaderboardData(_leaderboardData).ToList();
                     EnableLeaderboard();
-                    leaderbordData.GetRow(_leaderboardData);
+                    _leaderboardRowsManager.GetRow(_leaderboardData);
                 }));
             
         }
@@ -61,16 +61,15 @@ namespace Services.Leaderboard
             _leaderbordCanvas.gameObject.SetActive(false);
         }
         
-        private IEnumerable<LeaderboardData> GetHighScores(List<LeaderboardData> leaderboardDatas)
+        private IEnumerable<LeaderboardData> SortLeaderboardData(List<LeaderboardData> leaderboardData)
         {
-            return leaderboardDatas.OrderByDescending(x => x.UserScore);
+            return leaderboardData.OrderByDescending(x => x.UserScore).ToList();
         }
 
         private void OnEnable()
         {
             _openLeaderboard.onClick.AddListener(OpenLeaderboard);
             _closeLeaderboard.onClick.AddListener(DisableLeaderboard);
-            
         }
 
         private void OnDisable()

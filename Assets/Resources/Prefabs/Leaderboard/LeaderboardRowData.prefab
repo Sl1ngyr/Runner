@@ -146,7 +146,7 @@ GameObject:
   - component: {fileID: 2822367135399609229}
   - component: {fileID: 8824103562243380968}
   m_Layer: 5
-  m_Name: RowData
+  m_Name: LeaderboardRowData
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -212,9 +212,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 901f47b8f2bc43fb8f355cfc88aa7e3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rank: {fileID: 1664882813020056447}
-  username: {fileID: 4921729291913972774}
-  score: {fileID: 1646896673153771859}
+  Rank: {fileID: 1664882813020056447}
+  Username: {fileID: 4921729291913972774}
+  Score: {fileID: 1646896673153771859}
 --- !u!1 &7316376371142276027
 GameObject:
   m_ObjectHideFlags: 0

@@ -3112,7 +3112,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fb90697d96d458a8479d7ce5a6d1a99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rowData: {fileID: 8824103562243380968, guid: f573d5b60fd4a9342a59a8cd0f1b2e94, type: 3}
+  _leaderboardRowData: {fileID: 8824103562243380968, guid: f573d5b60fd4a9342a59a8cd0f1b2e94, type: 3}
 --- !u!1 &944067614
 GameObject:
   m_ObjectHideFlags: 0
@@ -4162,7 +4162,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _leaderbordCanvas: {fileID: 1189651809}
-  leaderbordData: {fileID: 927463095}
+  _leaderboardRowsManager: {fileID: 927463095}
   _openLeaderboard: {fileID: 289524743}
   _closeLeaderboard: {fileID: 242342365}
 --- !u!1 &1250096512
