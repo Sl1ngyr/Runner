@@ -1,4 +1,5 @@
-﻿using Services;
+﻿using Obstacles;
+using Services;
 using UnityEngine;
 
 namespace Player
@@ -8,7 +9,7 @@ namespace Player
 
         private void OnTriggerEnter(Collider coll)
         {
-            if (coll.gameObject.tag == "Obstacle")
+            if (coll.TryGetComponent(out Obstacle obstacle))
             {
                 EventBus.Instance.onPlayerCollideWithObstacle?.Invoke();
             }

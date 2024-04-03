@@ -46,7 +46,7 @@ namespace Services.Leaderboard
 
                     _leaderboardData = SortLeaderboardData(_leaderboardData).ToList();
                     EnableLeaderboard();
-                    _leaderboardRowsManager.GetRow(_leaderboardData);
+                    _leaderboardRowsManager.AddHighscoreDataToLeaderboardUI(_leaderboardData);
                 }));
             
         }

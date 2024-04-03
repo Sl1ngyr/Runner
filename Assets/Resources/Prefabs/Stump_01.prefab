@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e27be8165cb84e2db2ae6612251f404f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  endPositionZToDeactivate: -7
+  _endPositionZToDeactivate: -7
 --- !u!65 &7661236756150967559
 BoxCollider:
   m_ObjectHideFlags: 0

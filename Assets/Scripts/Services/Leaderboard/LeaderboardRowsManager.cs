@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Services.Leaderboard
 {
     public class LeaderboardRowsManager: MonoBehaviour
     {
-        [SerializeField] private LeaderboardRowData _leaderboardRowData;
+        [SerializeField] private LeaderboardRowData _prefabRowData;
 
         private void ClearListData()
         {
@@ -16,12 +15,12 @@ namespace Services.Leaderboard
             }
         }
         
-        public void GetRow(List<LeaderboardData> leaderboardData)
+        public void AddHighscoreDataToLeaderboardUI(List<LeaderboardData> leaderboardData)
         {
             ClearListData();
             for (int i = 0; i < leaderboardData.Count; i++)
             {
-                var row = Instantiate(_leaderboardRowData, transform);
+                var row = Instantiate(_prefabRowData, transform);
                 row.Rank.text = (i + 1).ToString();
                 row.Username.text = leaderboardData[i].UserName;
                 row.Score.text = leaderboardData[i].UserScore.ToString();

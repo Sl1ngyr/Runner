@@ -105,17 +105,10 @@ namespace Services.Database.Firebase
         
         private IEnumerator Registration(string email, string password, string username)
         {
-            if (username == "")
+            var entryData = CheckCorrectnessEntryData(email, password, username);
+            if (entryData != null)
             {
-                _warningRegisterText.text = "User name is empty";
-            }
-            else if (email == "")
-            {
-                _warningRegisterText.text = "Email field is empty";
-            }
-            else if (_passwordRegisterField.text != _confirmPasswordRegisterField.text)
-            {
-                _warningRegisterText.text = "Password Does Not Match!";
+                _warningRegisterText.text = entryData;
             }
             else
             {
@@ -125,11 +118,7 @@ namespace Services.Database.Firebase
 
                 if (RegisterTask.Exception != null)
                 {
-                    Debug.LogWarning(message: $"Failed to register task with {RegisterTask.Exception}");
-                    FirebaseException firebaseEx = RegisterTask.Exception.GetBaseException() as FirebaseException;
-                    AuthError errorCode = (AuthError)firebaseEx.ErrorCode;
-
-                    _warningRegisterText.text = GetErrorMessage(errorCode);
+                    _warningRegisterText.text = GetErrorMessage(ErrorDetection(RegisterTask));
                 }
                 else
                 {
@@ -145,10 +134,7 @@ namespace Services.Database.Firebase
 
                         if (profileTask.Exception != null)
                         {
-                            Debug.LogWarning(message: $"Failed to register task with {profileTask.Exception}");
-                            
-                            FirebaseException firebaseEx = profileTask.Exception.GetBaseException() as FirebaseException;
-                            AuthError errorCode = (AuthError)firebaseEx.ErrorCode;
+                            ErrorDetection(profileTask);
 
                             _warningRegisterText.text = "Username Set Failed!";
                         }
@@ -164,6 +150,34 @@ namespace Services.Database.Firebase
             }
         }
 
+        private string CheckCorrectnessEntryData(string email, string password, string username)
+        {
+            if (username == "")
+            {
+                return "User name is empty";
+            }
+            else if (email == "")
+            {
+                return "Email field is empty";
+            }
+            else if (password != _confirmPasswordRegisterField.text)
+            {
+                return "Password Does Not Match!";
+            }
+
+            return null;
+        }
+        
+        private AuthError ErrorDetection(Task _task)
+        {
+            Debug.LogWarning(message: $"Failed to register task with {_task.Exception}");
+                            
+            FirebaseException firebaseEx = _task.Exception.GetBaseException() as FirebaseException;
+            AuthError errorCode = (AuthError)firebaseEx.ErrorCode;
+            
+            return errorCode;
+        }
+        
         private string GetErrorMessage(AuthError errorCode)
         {
             
