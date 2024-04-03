@@ -4,7 +4,7 @@ namespace Obstacles
 {
     public class Obstacle : MonoBehaviour
     {
-        [SerializeField] private float endPositionZToDeactivate;
+        [SerializeField] private float _endPositionZToDeactivate;
         
         private float _speed;
         
@@ -41,7 +41,7 @@ namespace Obstacles
         
         private void Move()
         {
-            if (gameObject.transform.position.z <= endPositionZToDeactivate)
+            if (gameObject.transform.position.z <= _endPositionZToDeactivate)
             {
                 Deactivate();
             }

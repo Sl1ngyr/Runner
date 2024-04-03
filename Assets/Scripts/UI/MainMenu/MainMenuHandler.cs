@@ -14,9 +14,7 @@ namespace UI.MainMenu
         [SerializeField] private int _logOutSceneBuildIndex = 0;
         
         [Inject] private SceneLoader _sceneLoader;
-        
-        [SerializeField] private Button _button;
-        
+
         public void OnPointerDown(PointerEventData eventData)
         {
             EventBus.Instance.onGameStarted?.Invoke();

@@ -13,7 +13,7 @@ namespace Player
 
         private int _currentBorderPosition;
         
-        private bool isStartMoving = false;
+        private bool _isStartMoving = false;
         
         private Movement _movementInputAction;
 
@@ -42,11 +42,11 @@ namespace Player
         {
             Vector2 delta = _currentPosition - _initialPosition;
 
-            if (Mathf.Abs(delta.x) > _swipeResistance)
+            if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y) && Mathf.Abs(delta.x) > _swipeResistance && _isStartMoving)
             {
                 Move();
             }
-            else if (Mathf.Abs(delta.y) > _swipeResistance && isStartMoving)
+            else if(Mathf.Abs(delta.y) > Mathf.Abs(delta.x) && Mathf.Abs(delta.y) > _swipeResistance && _isStartMoving)
             {
                 onStartPlayAnimation?.Invoke(delta.y);
             }
@@ -56,7 +56,7 @@ namespace Player
         {
             Vector2 inputVector = _movementInputAction.Input.Move.ReadValue<Vector2>();
 
-            if (isStartMoving)
+            if (_isStartMoving)
             {
                 if (inputVector.x > 0 && _currentBorderPosition != RIGHT_BORDER_POSISITION_X)
                 {
@@ -77,7 +77,7 @@ namespace Player
         private void PlayAnimationForKeyboard()
         {
             Vector2 inputVector = _movementInputAction.Input.Move.ReadValue<Vector2>();
-            if (isStartMoving)
+            if (_isStartMoving)
             {
                 onStartPlayAnimation?.Invoke(inputVector.y);
             }
@@ -85,12 +85,12 @@ namespace Player
         
         private void StartMove()
         {
-            isStartMoving = true;
+            _isStartMoving = true;
         }
 
         private void StopMove()
         {
-            isStartMoving = false;
+            _isStartMoving = false;
         }
 
         private void OnEnable()
